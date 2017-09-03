@@ -30,7 +30,7 @@ type Payload struct {
 
 // IsCreate returns true if the event action is created or opened
 func (p Payload) IsCreate() bool {
-	return p.Action == "created" || p.Action == "openend"
+	return p.Action == "created" || p.Action == "opened"
 }
 
 // Notify notify the issue/pr related to the payload
