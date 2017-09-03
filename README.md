@@ -1,6 +1,6 @@
-# Gravekeeper
-
 ![](https://avatars2.githubusercontent.com/u/31578685?v=4&s=200)
+
+# Gravekeeper
 
 Gravekeeper informs users that a repo is abandoned, commenting on new
 PRs and Issues.
