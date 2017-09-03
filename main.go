@@ -30,7 +30,7 @@ func main() {
 			return
 		}
 		log.Println("received event:", evt)
-		if evt.IsCreate() {
+		if !evt.IsCreate() {
 			fmt.Fprintln(w, "not a valid event, ignoring...")
 			return
 		}
