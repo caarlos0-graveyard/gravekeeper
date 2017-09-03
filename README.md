@@ -1,4 +1,4 @@
-![](https://avatars2.githubusercontent.com/u/31578685?v=4&s=200)
+<img align="right" width="200" height="200" src="https://avatars2.githubusercontent.com/u/31578685?v=4&s=200">
 
 # Gravekeeper
 
