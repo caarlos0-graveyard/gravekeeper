@@ -5,7 +5,15 @@
 Gravekeeper informs users that a repo is abandoned, commenting on new
 PRs and Issues.
 
-It is deployed to AWS Lambda using [Up](https://github.com/apex/up).
+Example/test repository: https://github.com/caarlos0-graveyard/grave (check PRs and Issues).
+
+## How it works
+
+It is a simple endpoint running on AWS Lambda that comments on new issues and new pull requests.
+
+It is managed with [apex/up](https://github.com/apex/up).
+
+## Usage
 
 To use it, add [this url](https://w9tfb4bspe.execute-api.us-east-1.amazonaws.com/production/)
 to your repository (or even organization) webhooks. Set it up like this:
