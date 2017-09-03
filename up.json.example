@@ -1,0 +1,8 @@
+{
+  "name": "gravekeeper",
+  "description": "keeps abandoned repositories",
+  "profile": "AWS PROFILE TO USE",
+  "environment": {
+    "GITHUB_TOKEN": "YOUR TOKEN HERE"
+  }
+}
