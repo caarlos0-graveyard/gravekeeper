@@ -1,5 +1,7 @@
 # Gravekeeper
 
+![](https://avatars2.githubusercontent.com/u/31578685?v=4&s=460)
+
 Gravekeeper informs users that a repo is abandoned, commenting on new
 PRs and Issues.
 
@@ -12,4 +14,4 @@ to your repository (or even organization) webhooks. Set it up like this:
 
 It will leave a comment on new pull requests and new issues:
 
-![example comment](https://user-images.githubusercontent.com/245435/29999667-61e16a10-9028-11e7-80a6-73b5ac94d5c9.png)
+![example comment](https://user-images.githubusercontent.com/245435/29999797-c62e25dc-902b-11e7-9c79-0c5d6f957387.png)

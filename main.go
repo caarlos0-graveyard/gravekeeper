@@ -1,13 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/caarlos0/gravekeeper/github"
 )
 
 func shouldHandle(req *http.Request) bool {
@@ -15,87 +15,31 @@ func shouldHandle(req *http.Request) bool {
 	return event == "issues" || event == "pull_request"
 }
 
-type Repository struct {
-	FullName string `json:"full_name,omitempty"`
-}
-
-type Issue struct {
-	Number int64 `json:"number,omitempty"`
-}
-
-type Payload struct {
-	Action      string     `json:"action,omitempty"`
-	Issue       Issue      `json:"issue,omitempty"`
-	PullRequest Issue      `json:"pull_request,omitempty"`
-	Repository  Repository `json:"repository,omitempty"`
-}
-
-func (p Payload) GetNumber() int64 {
-	if p.Issue.Number != 0 {
-		return p.Issue.Number
-	}
-	return p.PullRequest.Number
-}
-
-func (p Payload) IsCreate() bool {
-	return p.Action == "created" || p.Action == "openend"
-}
-
-func (p Payload) CommentURL(api string) string {
-	var number = p.PullRequest.Number
-	if p.Issue.Number != 0 {
-		number = p.Issue.Number
-	}
-	return fmt.Sprintf(
-		"%s/repos/%s/issues/%d/comments",
-		api,
-		p.Repository.FullName,
-		number,
-	)
-}
-
-var body = []byte(`
-	{
-		"body": "Hi! Thanks for bringing that up, but this repo was [graveyarded](https://github.com/caarlos0/gravekeeper) and is not being actively maintained anymore."
-	}
-`)
-
-func comment(p Payload) error {
-	var url = p.CommentURL("https://api.github.com")
-	log.Println("URL:", url)
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(body))
-	if err != nil {
-		return err
-	}
-	req.Header.Add("Authorization", fmt.Sprintf("token %s", os.Getenv("GITHUB_TOKEN")))
-	res, err := http.DefaultClient.Do(req)
-	body, _ := ioutil.ReadAll(res.Body)
-	log.Println(string(body))
-	return err
-}
-
 func main() {
 	var addr = ":" + os.Getenv("PORT")
+	var token = os.Getenv("GITHUB_TOKEN")
+	var api = os.Getenv("GITHUB_API")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if !shouldHandle(r) {
-			fmt.Fprintln(w, "Will not handle this event")
+			fmt.Fprintln(w, "not a valid event, ignoring...")
 			return
 		}
-		var evt Payload
+		var evt github.Payload
 		if err := json.NewDecoder(r.Body).Decode(&evt); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
+		log.Println("received event:", evt)
 		if evt.IsCreate() {
-			fmt.Fprintln(w, "Will not handle this event")
+			fmt.Fprintln(w, "not a valid event, ignoring...")
 			return
 		}
-		log.Println("Event:", evt)
-		if err := comment(evt); err != nil {
+		if err := evt.Notify(api, token); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		fmt.Fprintln(w, "Done.")
+		fmt.Fprintln(w, "done")
 	})
+	log.Println("listening at", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }

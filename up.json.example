@@ -3,6 +3,7 @@
   "description": "keeps abandoned repositories",
   "profile": "AWS PROFILE TO USE",
   "environment": {
-    "GITHUB_TOKEN": "YOUR TOKEN HERE"
+    "GITHUB_TOKEN": "YOUR TOKEN HERE",
+    "GITHUB_API": "https://api.github.com"
   }
 }
