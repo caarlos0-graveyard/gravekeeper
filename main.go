@@ -15,11 +15,8 @@ func shouldHandle(req *http.Request) bool {
 	return event == "issues" || event == "pull_request"
 }
 
-func main() {
-	var addr = ":" + os.Getenv("PORT")
-	var token = os.Getenv("GITHUB_TOKEN")
-	var api = os.Getenv("GITHUB_API")
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+func handler(api, token string) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if !shouldHandle(r) {
 			fmt.Fprintln(w, "not a valid event, ignoring...")
 			return
@@ -39,7 +36,14 @@ func main() {
 			return
 		}
 		fmt.Fprintln(w, "done")
-	})
+	}
+}
+
+func main() {
+	var addr = ":" + os.Getenv("PORT")
+	var token = os.Getenv("GITHUB_TOKEN")
+	var api = os.Getenv("GITHUB_API")
+	http.Handle("/", handler(api, token))
 	log.Println("listening at", addr)
 	log.Fatal(http.ListenAndServe(addr, nil))
 }
